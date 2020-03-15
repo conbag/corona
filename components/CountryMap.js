@@ -4,11 +4,26 @@ import {
   Geographies,
   Geography,
 } from "react-simple-maps"
+import { useState, useEffect } from "react"
 
 // url to a valid topojson file
 const geoUrl = "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json"
 
 export default function CountryMap({ setTooltipContent }) {
+    const [countryStats, setCountryStats] = useState();
+
+    useEffect(() => {
+        fetch(`https://covid19.mathdro.id/api/confirmed/`)
+        .then(data => data.json())
+        .then(res => {                
+            const countryData = reduceCountryData(res)
+
+            console.log(countryData)
+            setCountryStats(countryData)            
+        })        
+    }, [])
+    // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/ 
+
     return (
         <div>
             <ComposableMap 
@@ -27,12 +42,13 @@ export default function CountryMap({ setTooltipContent }) {
                         key={geo.rsmKey} 
                         geography={geo} 
                         onMouseEnter={() => {
-                            fetch(`https://covid19.mathdro.id/api/countries/${geo.properties.ISO_A2}`)
-                            .then(data => data.json())
-                            .then(result => {                                    
-                                setTooltipContent(`${geo.properties.NAME}<br><br>Confirmed: ${result.confirmed.value.toLocaleString()}<br>Recovered: ${result.recovered.value.toLocaleString()}<br>Deaths: ${result.deaths.value.toLocaleString()}`);
-                            })
-                            .catch(err => setTooltipContent(`${geo.properties.NAME}<br><br>No data available`))                                                                                                                           
+                            const iso = geo.properties.ISO_A2
+                            if(countryStats[iso]) {
+                                const {confirmed, recovered, deaths} = countryStats[iso]
+                                setTooltipContent(`${geo.properties.NAME}<br><br>Confirmed: ${confirmed.toLocaleString()}<br>Recovered: ${recovered.toLocaleString()}<br>Deaths: ${deaths.toLocaleString()}`);
+                            } else {
+                                setTooltipContent(`${geo.properties.NAME}<br><br>No data available`)
+                            }
                         }}
                         onMouseLeave={() => {
                             setTooltipContent(``);
@@ -57,4 +73,16 @@ export default function CountryMap({ setTooltipContent }) {
             </ComposableMap>      
         </div>
     )
+}
+
+function reduceCountryData(countryArray) {
+    return countryArray.reduce((acc, curr) => {                
+        acc[curr.iso2] = {
+            confirmed: acc[curr.iso2] ? (acc[curr.iso2].confirmed + curr.confirmed) : curr.confirmed,
+            recovered: acc[curr.iso2] ? (acc[curr.iso2].recovered + curr.recovered) : curr.recovered,
+            deaths: acc[curr.iso2] ? (acc[curr.iso2].deaths + curr.deaths) : curr.deaths 
+        }
+
+        return acc;
+    }, {})
 }
