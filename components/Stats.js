@@ -1,55 +1,79 @@
-import { useState, useEffect } from "react"
+import Moment from "moment";
+import { useEffect, useState } from "react";
+import StatsCard from "./StatsCard";
+
+const today = new Date();
+const yesterday = Moment(today).subtract(1, "days");
 
 export default function Stats() {
-    const [stats, setStats] = useState();
+  const [stats, setStats] = useState();
+  const [delta, setDelta] = useState();
 
-    useEffect(() => {
-        fetch(`https://covid19.mathdro.id/api/`)
-        .then(data => data.json())
-        .then(res => {    
-            console.log(res)
-            setStats(res)            
-        })        
-    }, [])
-    // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/ 
+  useEffect(() => {
+    fetch(`https://covid19.mathdro.id/api/`)
+      .then(data => data.json())
+      .then(res => {
+        //console.log(res);
+        setStats(res);
+      });
 
-    if(!stats) {
-        return <p>loading ........</p>
-    }
+    fetch(`https://covid19.mathdro.id/api/daily`)
+      .then(data => data.json())
+      .then(res => {
+        console.log(res);
+        setDelta(res);
+      });
+  }, []);
+  // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/
 
-    return (
-        <div style={{display: "flex", justifyContent: "space-evenly"}}>
-            <div style={styles.statContainer}>
-                <span style={styles.statHeader}>Confirmed</span>
-                <span>{stats.confirmed.value.toLocaleString()}</span>
-            </div>
-            <div style={styles.statContainer}>
-                <span style={styles.statHeader}>Recovered</span>
-                <span>{stats.recovered.value.toLocaleString()}</span>
-            </div>
-            <div style={styles.statContainer}>
-                <span style={styles.statHeader}>Deaths</span>
-                <span>{stats.deaths.value.toLocaleString()}</span>
-            </div>
-        </div>
-    )
+  if (!delta || !stats) {
+    return <p>loading ........</p>;
+  }
+
+  return (
+    <div
+      style={{
+        display: "flex",
+        flex: 1,
+        justifyContent: "space-evenly",
+        padding: "20px 0px"
+      }}
+    >
+      <StatsCard
+        title="Confirmed"
+        amount={stats.confirmed.value.toLocaleString()}
+        delta={calculateDeltaPercentage(delta, "Confirmed")}
+      ></StatsCard>
+      <StatsCard
+        title="Recovered"
+        amount={stats.recovered.value.toLocaleString()}
+        delta={calculateDeltaPercentage(delta, "Recovered")}
+      ></StatsCard>
+      <StatsCard
+        title="Deaths"
+        amount={stats.deaths.value.toLocaleString()}
+      ></StatsCard>
+    </div>
+  );
 }
 
-const styles = {
-    statContainer: {
-        border: '.5px solid',
-        borderRadius: '15px',
-        padding: '20px 0px',
-        flex: .2,
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-        display: 'flex',
-        flexDirection: 'column',
-        margin: "15px 0px"
-    },
-    statHeader: {
-        fontSize: '1.2em',  
-        fontWeight: 'bold',
-        paddingBottom: "10px"      
-    }
+function convertDateToString(date) {
+  return Moment(date).format("YYYY/MM/DD");
+}
+
+function calculateDeltaPercentage(data, category) {
+  console.log(data);
+  console.log(category);
+
+  const todayObj = data.find(
+    d => d.reportDateString === convertDateToString(today)
+  );
+  const yesterdayObj = data.find(
+    d => d.reportDateString === convertDateToString(yesterday)
+  );
+  return (
+    ((todayObj[`delta${category}`] - yesterdayObj[`delta${category}`]) /
+      yesterdayObj[`delta${category}`]) *
+    100
+  );
 }
