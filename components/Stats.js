@@ -12,15 +12,13 @@ export default function Stats() {
   useEffect(() => {
     fetch(`https://covid19.mathdro.id/api/`)
       .then(data => data.json())
-      .then(res => {
-        //console.log(res);
+      .then(res => {        
         setStats(res);
       });
 
     fetch(`https://covid19.mathdro.id/api/daily`)
       .then(data => data.json())
-      .then(res => {
-        console.log(res);
+      .then(res => {        
         setDelta(res);
       });
   }, []);
@@ -62,9 +60,6 @@ function convertDateToString(date) {
 }
 
 function calculateDeltaPercentage(data, category) {
-  console.log(data);
-  console.log(category);
-
   const todayObj = data.find(
     d => d.reportDateString === convertDateToString(today)
   );

@@ -18,8 +18,7 @@ export default function CountryMap({ setTooltipContent }) {
     fetch(`https://covid19.mathdro.id/api/confirmed/`)
       .then(data => data.json())
       .then(res => {
-        const countryData = reduceCountryData(res);
-        console.log(countryData);
+        const countryData = reduceCountryData(res);        
         setCountryStats(countryData);
       });
   }, []);
@@ -44,13 +43,10 @@ export default function CountryMap({ setTooltipContent }) {
         >
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
-              geographies.map(geo => {
-                //console.log(geo)
+              geographies.map(geo => {                
                 const { ISO_A2, POP_EST, NAME } = geo.properties;
                 const { confirmed, recovered, deaths } =
-                  countryStats[ISO_A2] || {};
-
-                //console.log(confirmed / POP_EST)
+                  countryStats[ISO_A2] || {};                
 
                 return (
                   <Geography
