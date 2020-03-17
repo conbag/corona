@@ -72,8 +72,9 @@ export default function CountryMap({ setTooltipContent }) {
                         outline: "none"
                       },
                       hover: {
-                        fill: "#4caf50",
-                        outline: "none"
+                        stroke: "#ababab",
+                        outline: "none",
+                        strokeWidth: "1px"
                       },
                       pressed: {
                         fill: "#E42",
