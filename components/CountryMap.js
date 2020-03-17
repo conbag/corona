@@ -1,6 +1,8 @@
 import { scaleLinear } from "d3-scale";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { ComposableMap, Geographies, Geography } from "react-simple-maps";
+import getCountryData from "../utils/getCountryData";
 
 // url to a valid topojson file
 const geoUrl =
@@ -12,15 +14,11 @@ const colorScale = scaleLinear()
   .range(["#ffedea", "#ff5233"]);
 
 export default function CountryMap({ setTooltipContent }) {
-  const [countryStats, setCountryStats] = useState();
+  const countryStats = useSelector(state => state.countryData);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    fetch(`https://covid19.mathdro.id/api/confirmed/`)
-      .then(data => data.json())
-      .then(res => {
-        const countryData = reduceCountryData(res);        
-        setCountryStats(countryData);
-      });
+    getCountryData(dispatch);
   }, []);
   // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/
 
@@ -43,10 +41,10 @@ export default function CountryMap({ setTooltipContent }) {
         >
           <Geographies geography={geoUrl}>
             {({ geographies }) =>
-              geographies.map(geo => {                
+              geographies.map(geo => {
                 const { ISO_A2, POP_EST, NAME } = geo.properties;
                 const { confirmed, recovered, deaths } =
-                  countryStats[ISO_A2] || {};                
+                  countryStats[ISO_A2] || {};
 
                 return (
                   <Geography
@@ -92,20 +90,4 @@ export default function CountryMap({ setTooltipContent }) {
       )}
     </div>
   );
-}
-
-function reduceCountryData(countryArray) {
-  return countryArray.reduce((acc, curr) => {
-    acc[curr.iso2] = {
-      confirmed: acc[curr.iso2]
-        ? acc[curr.iso2].confirmed + curr.confirmed
-        : curr.confirmed,
-      recovered: acc[curr.iso2]
-        ? acc[curr.iso2].recovered + curr.recovered
-        : curr.recovered,
-      deaths: acc[curr.iso2] ? acc[curr.iso2].deaths + curr.deaths : curr.deaths
-    };
-
-    return acc;
-  }, {});
 }
