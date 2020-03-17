@@ -1,0 +1,1 @@
+export const COUNTRY_SELECTOR_FLEX_RATIO = .2

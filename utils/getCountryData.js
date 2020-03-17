@@ -12,6 +12,8 @@ export default function getCountryData(dispatch) {
 function reduceCountryData(countryArray) {
   return countryArray.reduce((acc, curr) => {
     acc[curr.iso2] = {
+      countryName: curr.countryRegion,
+      iso2: curr.iso2,
       confirmed: acc[curr.iso2]
         ? acc[curr.iso2].confirmed + curr.confirmed
         : curr.confirmed,
