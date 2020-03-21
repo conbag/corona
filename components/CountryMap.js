@@ -13,7 +13,7 @@ const colorScale = scaleLinear()
   .domain([0.0, CONFIRMED_POPULATION_HIGH_DOMAIN])
   .range(["#ffedea", "#ff5233"]);
 
-export default function CountryMap({ setTooltipContent }) {
+export default function CountryMap({ setTooltipContent }) {  
   const countryStats = useSelector(state => state.countryData);
   const dispatch = useDispatch();
 

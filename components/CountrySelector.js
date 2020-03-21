@@ -23,8 +23,8 @@ export default function CountrySelector() {
 
   return (
     <FormControl className={classes.formControl}>
-      <InputLabel htmlFor="country-native-simple">Country</InputLabel>
       <Select
+        style={{padding: '0px 5px'}}
         native
         value={country}
         onChange={event => {
@@ -39,15 +39,26 @@ export default function CountrySelector() {
         }}
       >
         {countryStats ? (
-          Object.values(countryStats).map((country, i) => (
-            <option key={country.iso2} value={country.iso2}>
-              {country.countryName}
-            </option>
-          ))
+          Object.values(countryStats)
+            .filter(country => country.iso2)
+            .sort(compareCountryNames)
+            .map((country, i) => (
+              <option key={country.iso2} value={country.iso2}>
+                {country.countryName}
+              </option>
+            ))
         ) : (
           <p></p>
         )}
       </Select>
     </FormControl>
   );
+}
+
+function compareCountryNames(country1, country2) {
+  if(country1.countryName >= country2.countryName) {
+    return 1
+  }
+
+  return -1
 }
