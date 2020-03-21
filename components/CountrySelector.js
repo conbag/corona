@@ -1,11 +1,11 @@
 import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateSelectedCountry } from "../redux/actions";
 import { COUNTRY_SELECTOR_FLEX_RATIO } from "../utils/constants";
+import { MenuItem } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -22,31 +22,37 @@ export default function CountrySelector() {
   const [country, setCountry] = useState("");
 
   return (
-    <FormControl className={classes.formControl}>
+    <FormControl variant="outlined" className={classes.formControl}>
       <Select
-        style={{padding: '0px 5px'}}
-        native
-        value={country}
+        style={{ padding: "0px 5px" }}
+        id="demo-simple-select-outlined"
+        value={country ? country : "glob"}
         onChange={event => {
           const countryCode = event.target.value;
 
+          // do we need local state here if dispatching to redux store?
           setCountry(countryCode);
           dispatch(updateSelectedCountry(countryCode));
-        }}
-        inputProps={{
-          name: "country",
-          id: "country-native-simple"
         }}
       >
         {countryStats ? (
           Object.values(countryStats)
             .filter(country => country.iso2)
             .sort(compareCountryNames)
-            .map((country, i) => (
-              <option key={country.iso2} value={country.iso2}>
-                {country.countryName}
-              </option>
-            ))
+            .map(country => {
+              if (country.countryName === "Global") {
+                return (
+                  <MenuItem style={{fontWeight: "bold"}} key={country.iso2} value={country.iso2}>
+                    <em>{country.countryName}</em>
+                  </MenuItem>
+                );
+              }
+              return (
+                <MenuItem key={country.iso2} value={country.iso2}>
+                  {country.countryName}
+                </MenuItem>
+              );
+            })
         ) : (
           <p></p>
         )}
@@ -56,9 +62,9 @@ export default function CountrySelector() {
 }
 
 function compareCountryNames(country1, country2) {
-  if(country1.countryName >= country2.countryName) {
-    return 1
+  if (country1.countryName >= country2.countryName) {
+    return 1;
   }
 
-  return -1
+  return -1;
 }

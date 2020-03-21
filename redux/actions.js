@@ -12,6 +12,7 @@ export const updateCountryData = data => ({
   payload: data
 });
 
+//iso2
 export const updateSelectedCountry = country => ({
   type: UPDATE_SELECTED_COUNTRY,
   payload: country

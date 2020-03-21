@@ -15,6 +15,7 @@ const colorScale = scaleLinear()
 
 export default function CountryMap({ setTooltipContent }) {  
   const countryStats = useSelector(state => state.countryData);
+  const selectedCountry = useSelector(state => state.selectedCountry);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -67,7 +68,8 @@ export default function CountryMap({ setTooltipContent }) {
                     }}
                     style={{
                       default: {
-                        outline: "none"
+                        outline: "none",
+                        fill: ISO_A2 === selectedCountry ? "green" : ""
                       },
                       hover: {
                         stroke: "#ababab",
