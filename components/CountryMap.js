@@ -74,10 +74,10 @@ export default function CountryMap({ setTooltipContent }) {
                       hover: {
                         stroke: "#ababab",
                         outline: "none",
-                        strokeWidth: "1px"
+                        strokeWidth: "1px",
+                        fill: ISO_A2 === selectedCountry ? "green" : ""
                       },
-                      pressed: {
-                        fill: "#E42",
+                      pressed: {                        
                         outline: "none"
                       }
                     }}
