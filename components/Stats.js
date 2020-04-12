@@ -59,16 +59,19 @@ export default function Stats() {
       >
         <StatsCard
           title="Confirmed"
+          color="rgba(0, 0, 255, 0.5)"
           amount={countryStats[selectedCountry].confirmed}
           delta={calculateDeltaPercentage(delta, "Confirmed")}
         ></StatsCard>
         <StatsCard
           title="Recovered"
+          color="rgba(0, 255, 0, 0.5)"
           amount={countryStats[selectedCountry].recovered}
           delta={calculateDeltaPercentage(delta, "Recovered")}
         ></StatsCard>
         <StatsCard
           title="Deaths"
+          color="rgba(255, 0, 0, 0.5)"
           amount={countryStats[selectedCountry].deaths}
         ></StatsCard>
       </div>
@@ -81,12 +84,11 @@ function convertDateToString(date) {
 }
 
 function calculateDeltaPercentage(data, category) {
-  let backup = {}
-  backup[`delta${category}`] = 0
+  let backup = {};
+  backup[`delta${category}`] = 0;
 
-  const todayObj = data.find(
-    d => d.reportDate === convertDateToString(today)
-  ) || backup;
+  const todayObj =
+    data.find(d => d.reportDate === convertDateToString(today)) || backup;
   const yesterdayObj = data.find(
     d => d.reportDate === convertDateToString(yesterday)
   );

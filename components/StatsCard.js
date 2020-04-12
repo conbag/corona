@@ -4,11 +4,13 @@ import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
 import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
+import CountUp from "react-countup";
 
 const useStyles = makeStyles({
   root: {
     minWidth: 275,
-    display: "flex"
+    display: "flex",
+    borderBottom: props => `8px solid ${props.color}`
   },
   title: {
     fontSize: 14
@@ -23,8 +25,8 @@ const useStyles = makeStyles({
   }
 });
 
-export default function StatsCard({ title, amount, delta }) {
-  const classes = useStyles();
+export default function StatsCard({ title, color, amount, delta }) {  
+  const classes = useStyles({ color });
 
   return (
     <Card className={classes.root}>
@@ -37,10 +39,10 @@ export default function StatsCard({ title, amount, delta }) {
           Covid-19
         </Typography>
         <Typography variant="h5" component="h2">
-          {title}
+          <CountUp start={0} end={amount} duration={2} separator="," />
         </Typography>
         <Typography variant="body2" component="p">
-          {amount.toLocaleString()}
+          {title}
         </Typography>
       </CardContent>
       <CardContent className={classes.percentageContainer}>
