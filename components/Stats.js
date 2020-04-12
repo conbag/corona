@@ -43,7 +43,7 @@ export default function Stats() {
   // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/
 
   if (!delta || !countryStats || !selectedCountry) {
-    return <p>loading ........</p>;
+    return <p></p>;
   }
 
   return (
@@ -77,16 +77,20 @@ export default function Stats() {
 }
 
 function convertDateToString(date) {
-  return Moment(date).format("YYYY/MM/DD");
+  return Moment(date).format("YYYY-MM-DD");
 }
 
 function calculateDeltaPercentage(data, category) {
+  let backup = {}
+  backup[`delta${category}`] = 0
+
   const todayObj = data.find(
-    d => d.reportDateString === convertDateToString(today)
-  );
+    d => d.reportDate === convertDateToString(today)
+  ) || backup;
   const yesterdayObj = data.find(
-    d => d.reportDateString === convertDateToString(yesterday)
+    d => d.reportDate === convertDateToString(yesterday)
   );
+
   return (
     ((todayObj[`delta${category}`] - yesterdayObj[`delta${category}`]) /
       yesterdayObj[`delta${category}`]) *
