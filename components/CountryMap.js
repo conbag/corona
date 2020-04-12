@@ -13,7 +13,7 @@ import getCountryData from "../utils/getCountryData";
 const geoUrl =
   "https://raw.githubusercontent.com/zcreativelabs/react-simple-maps/master/topojson-maps/world-110m.json";
 
-const CONFIRMED_POPULATION_HIGH_DOMAIN = 0.0003;
+const CONFIRMED_POPULATION_HIGH_DOMAIN = 0.0005;
 const colorScale = scaleLinear()
   .domain([0.0, CONFIRMED_POPULATION_HIGH_DOMAIN])
   .range(["#ffedea", "#ff5233"]);

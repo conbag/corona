@@ -1,6 +1,6 @@
 import { SET_COUNTRY_DATA, UPDATE_COUNTRY_DATA, UPDATE_SELECTED_COUNTRY } from "./actions";
 
-export const reducer = (state = { selectedCountry: "glob" }, action) => {
+export const reducer = (state = { selectedCountry: "glob", selectedTab: 0 }, action) => {
   switch (action.type) {
     case SET_COUNTRY_DATA:
       return {
