@@ -3,7 +3,7 @@ import Select from "@material-ui/core/Select";
 import { makeStyles } from "@material-ui/core/styles";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateSelectedCountry } from "../redux/actions";
+import { updateSelectedCountry, updateGeoData } from "../redux/actions";
 import { COUNTRY_SELECTOR_FLEX_RATIO } from "../utils/constants";
 import { MenuItem } from "@material-ui/core";
 
@@ -33,6 +33,9 @@ export default function CountrySelector() {
           // do we need local state here if dispatching to redux store?
           setCountry(countryCode);
           dispatch(updateSelectedCountry(countryCode));
+          if (countryCode === "glob") {
+            dispatch(updateGeoData({}));
+          }
         }}
       >
         {countryStats ? (
@@ -42,7 +45,11 @@ export default function CountrySelector() {
             .map(country => {
               if (country.countryName === "Global") {
                 return (
-                  <MenuItem style={{fontWeight: "bold"}} key={country.iso2} value={country.iso2}>
+                  <MenuItem
+                    style={{ fontWeight: "bold" }}
+                    key={country.iso2}
+                    value={country.iso2}
+                  >
                     <em>{country.countryName}</em>
                   </MenuItem>
                 );

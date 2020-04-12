@@ -90,7 +90,7 @@ function calculateDeltaPercentage(data, category) {
   const todayObj =
     data.find(d => d.reportDate === convertDateToString(today)) || backup;
   const yesterdayObj = data.find(
-    d => d.reportDate === convertDateToString(yesterday)
+    d => d.reportDate === convertDateToString(yesterday) || backup
   );
 
   return (

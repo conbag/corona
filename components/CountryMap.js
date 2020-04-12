@@ -1,5 +1,5 @@
 import { scaleLinear } from "d3-scale";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   ComposableMap,
@@ -8,6 +8,7 @@ import {
   ZoomableGroup
 } from "react-simple-maps";
 import getCountryData from "../utils/getCountryData";
+import { updateGeoData } from "../redux/actions";
 
 // url to a valid topojson file
 const geoUrl =
@@ -21,12 +22,14 @@ const colorScale = scaleLinear()
 export default function CountryMap({ setTooltipContent }) {
   const countryStats = useSelector(state => state.countryData);
   const selectedCountry = useSelector(state => state.selectedCountry);
+  const { geog, projection, path, current, zoom } =
+    useSelector(state => state.geoData) || {};
   const dispatch = useDispatch();
 
   useEffect(() => {
     getCountryData(dispatch);
   }, []);
-  // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/
+  // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/  
 
   return (
     <div data-tip="">
@@ -41,17 +44,30 @@ export default function CountryMap({ setTooltipContent }) {
           style={{
             width: "100%",
             height: "auto",
-            backgroundColor: "#2D2D2D",
-            borderRadius: "5px"
+            backgroundColor: "#2D2D2D"
           }}
         >
-          <ZoomableGroup zoom={1}>
+          <ZoomableGroup
+            center={geog ? projection.invert(path.centroid(geog)) : [0, 0]}
+            zoom={geog ? 2 : 1}
+          >
             <Geographies geography={geoUrl}>
-              {({ geographies }) =>
-                geographies.map(geo => {
+              {({ geographies, projection, path }) => {
+                return geographies.map(geo => {
                   const { ISO_A2, POP_EST, NAME } = geo.properties;
                   const { confirmed, recovered, deaths } =
                     countryStats[ISO_A2] || {};
+
+                  if (ISO_A2 === selectedCountry && ISO_A2 !== current) {                    
+                    dispatch(
+                      updateGeoData({
+                        geog: geo,
+                        projection,
+                        path,                        
+                        current: selectedCountry
+                      })
+                    );
+                  }
 
                   return (
                     <Geography
@@ -74,6 +90,7 @@ export default function CountryMap({ setTooltipContent }) {
                       onMouseLeave={() => {
                         setTooltipContent(``);
                       }}
+                      //onClick={handleGeographyUpdate(geo, projection, path)}
                       style={{
                         default: {
                           outline: "none",
@@ -91,8 +108,8 @@ export default function CountryMap({ setTooltipContent }) {
                       }}
                     />
                   );
-                })
-              }
+                });
+              }}
             </Geographies>
           </ZoomableGroup>
         </ComposableMap>
