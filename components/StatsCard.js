@@ -45,7 +45,7 @@ export default function StatsCard({ title, color, amount, delta }) {
           {title}
         </Typography>
       </CardContent>
-      <CardContent className={classes.percentageContainer}>
+      {/* <CardContent className={classes.percentageContainer}>
         {delta && (
           <Typography
             variant="h5"
@@ -56,7 +56,7 @@ export default function StatsCard({ title, color, amount, delta }) {
             {`${Math.abs(delta).toFixed(2)}%`}
           </Typography>
         )}
-      </CardContent>
+      </CardContent> */}
     </Card>
   );
 }

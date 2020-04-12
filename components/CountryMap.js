@@ -89,8 +89,7 @@ export default function CountryMap({ setTooltipContent }) {
                       }}
                       onMouseLeave={() => {
                         setTooltipContent(``);
-                      }}
-                      //onClick={handleGeographyUpdate(geo, projection, path)}
+                      }}                      
                       style={{
                         default: {
                           outline: "none",
