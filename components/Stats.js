@@ -1,7 +1,7 @@
 import Moment from "moment";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateCountryData, updateSelectedCountry } from "../redux/actions";
+import { updateCountryData, updateSelectedCountry, updateDailyData } from "../redux/actions";
 import { COUNTRY_SELECTOR_FLEX_RATIO } from "../utils/constants";
 import CountrySelector from "./CountrySelector";
 import StatsCard from "./StatsCard";
@@ -38,6 +38,7 @@ export default function Stats() {
       .then(data => data.json())
       .then(res => {
         setDelta(res);
+        dispatch(updateDailyData(res))
       });
   }, []);
   // empty array as second argument ensures useEffect function only runs once on initial render: https://css-tricks.com/run-useeffect-only-once/

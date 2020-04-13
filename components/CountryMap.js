@@ -93,13 +93,13 @@ export default function CountryMap({ setTooltipContent }) {
                       style={{
                         default: {
                           outline: "none",
-                          fill: ISO_A2 === selectedCountry ? "green" : ""
+                          fill: ISO_A2 === selectedCountry ? "rgba(0, 255, 0, 0.5)" : ""
                         },
                         hover: {
                           stroke: "#ababab",
                           outline: "none",
                           strokeWidth: "1px",
-                          fill: ISO_A2 === selectedCountry ? "green" : ""
+                          fill: ISO_A2 === selectedCountry ? "rgba(0, 255, 0, 0.5)" : ""
                         },
                         pressed: {
                           outline: "none"
